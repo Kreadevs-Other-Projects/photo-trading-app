@@ -12,49 +12,27 @@ export function SnapshotEffect() {
   const [isCapturing, setIsCapturing] = useState(false);
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
   const [isCameraOn, setIsCameraOn] = useState(false);
-  const [stream, setStream] = useState<MediaStream | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isSupported, setIsSupported] = useState(true);
 
-  // Check if browser supports media devices
-  useEffect(() => {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      setIsSupported(false);
-      setError("Camera access is not supported in this browser");
-    }
-  }, []);
-
-  // Start camera function with better error handling
+  // Start camera function
   const startCamera = useCallback(async () => {
     try {
       setError(null);
-
-      // Check if mediaDevices is available
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw new Error("Camera API not supported in this browser");
-      }
-
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
+      const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           width: { ideal: 1280 },
           height: { ideal: 720 },
           facingMode: "user",
         },
+        audio: false,
       });
 
       if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-        // Wait for video to be ready
-        await new Promise((resolve) => {
-          if (videoRef.current) {
-            videoRef.current.onloadedmetadata = () => resolve(true);
-          }
-        });
+        videoRef.current.srcObject = stream;
       }
-      setStream(mediaStream);
       setIsCameraOn(true);
     } catch (err: any) {
-      console.error("Error accessing camera:", err);
+      console.error("Error accessing webcam:", err);
 
       // Handle specific error cases
       if (err.name === "NotAllowedError") {
@@ -76,14 +54,15 @@ export function SnapshotEffect() {
 
   // Stop camera function
   const stopCamera = useCallback(() => {
+    const stream = videoRef.current?.srcObject as MediaStream;
     if (stream) {
-      stream.getTracks().forEach((track) => {
-        track.stop();
-      });
-      setStream(null);
-      setIsCameraOn(false);
+      stream.getTracks().forEach((track) => track.stop());
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
     }
-  }, [stream]);
+    setIsCameraOn(false);
+  }, []);
 
   // Capture photo from webcam
   const handleCapture = useCallback(() => {
@@ -120,13 +99,14 @@ export function SnapshotEffect() {
   // Clean up on unmount
   useEffect(() => {
     return () => {
+      const stream = videoRef.current?.srcObject as MediaStream;
       if (stream) {
         stream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [stream]);
+  }, []);
 
-  // Demo capture function for unsupported browsers
+  // Demo capture function for fallback
   const handleDemoCapture = () => {
     setIsCapturing(true);
     setTimeout(() => {
@@ -242,23 +222,19 @@ export function SnapshotEffect() {
                       <>
                         <AlertCircle className="w-16 h-16 text-destructive mx-auto mb-4" />
                         <p className="text-muted-foreground mb-4">{error}</p>
-                        {isSupported && (
-                          <Button
-                            onClick={startCamera}
-                            className="mt-2"
-                            variant="outline"
-                          >
-                            Try Again
-                          </Button>
-                        )}
+                        <Button
+                          onClick={startCamera}
+                          className="mt-2"
+                          variant="outline"
+                        >
+                          Try Again
+                        </Button>
                       </>
                     ) : (
                       <>
                         <VideoOff className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
                         <p className="text-muted-foreground">
-                          {isSupported
-                            ? "Camera is ready to start"
-                            : "Camera not supported - using demo mode"}
+                          Camera is ready to start
                         </p>
                       </>
                     )}
@@ -292,38 +268,19 @@ export function SnapshotEffect() {
             {/* Camera Control Buttons */}
             <div className="flex gap-4 flex-wrap justify-center">
               {!isCameraOn ? (
-                <>
-                  {isSupported ? (
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Button
-                        size="lg"
-                        onClick={startCamera}
-                        className="h-16 px-8 bg-primary hover:bg-primary/90 text-primary-foreground glow-cyan"
-                      >
-                        <Video className="w-5 h-5 mr-2" />
-                        Start Camera
-                      </Button>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Button
-                        size="lg"
-                        onClick={handleDemoCapture}
-                        disabled={isCapturing}
-                        className="h-16 px-8 bg-primary hover:bg-primary/90 text-primary-foreground"
-                      >
-                        <Camera className="w-5 h-5 mr-2" />
-                        Demo Capture
-                      </Button>
-                    </motion.div>
-                  )}
-                </>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button
+                    size="lg"
+                    onClick={startCamera}
+                    className="h-16 px-8 bg-primary hover:bg-primary/90 text-primary-foreground glow-cyan"
+                  >
+                    <Video className="w-5 h-5 mr-2" />
+                    Start Camera
+                  </Button>
+                </motion.div>
               ) : (
                 <motion.div
                   whileHover={{ scale: 1.05 }}
@@ -349,9 +306,7 @@ export function SnapshotEffect() {
             <p className="text-muted-foreground text-lg text-center">
               {isCameraOn
                 ? "Click the camera button to capture a moment"
-                : isSupported
-                ? "Start your camera to begin capturing photos"
-                : "Your browser doesn't support camera access - try demo mode"}
+                : "Start your camera to begin capturing photos"}
             </p>
 
             {/* Polaroid Carousel */}
@@ -411,9 +366,7 @@ export function SnapshotEffect() {
                               transition={{ delay: 1.5 }}
                               className="text-xs text-gray-500"
                             >
-                              {isSupported
-                                ? `Moment #${capturedPhotos.length - index}`
-                                : "Demo Photo"}
+                              Moment #{capturedPhotos.length - index}
                             </motion.p>
                           </div>
                         </div>
@@ -426,9 +379,7 @@ export function SnapshotEffect() {
               {capturedPhotos.length === 0 && (
                 <div className="text-center py-12">
                   <p className="text-muted-foreground">
-                    {isSupported
-                      ? "Your captured moments will appear here"
-                      : "Demo photos will appear here"}
+                    Your captured moments will appear here
                   </p>
                 </div>
               )}
