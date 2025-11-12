@@ -10,11 +10,11 @@ export function SnapshotEffect() {
   const isInView = useInView(ref, { once: true, amount: 0.3 });
 
   const [isCapturing, setIsCapturing] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Start camera function
   const startCamera = useCallback(async () => {
     try {
       setError(null);
@@ -28,13 +28,12 @@ export function SnapshotEffect() {
       });
 
       if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+        videoRef.current.srcObject = await stream;
       }
       setIsCameraOn(true);
     } catch (err: any) {
       console.error("Error accessing webcam:", err);
 
-      // Handle specific error cases
       if (err.name === "NotAllowedError") {
         setError(
           "Camera permission denied. Please allow camera access and try again."
@@ -52,7 +51,14 @@ export function SnapshotEffect() {
     }
   }, []);
 
-  // Stop camera function
+  useEffect(() => {
+    if (isClicked) {
+      startCamera();
+    } else if (isCameraOn) {
+      startCamera();
+    }
+  }, [isClicked, isCameraOn]);
+
   const stopCamera = useCallback(() => {
     const stream = videoRef.current?.srcObject as MediaStream;
     if (stream) {
@@ -62,9 +68,9 @@ export function SnapshotEffect() {
       }
     }
     setIsCameraOn(false);
+    setIsClicked(false);
   }, []);
 
-  // Capture photo from webcam
   const handleCapture = useCallback(() => {
     if (!videoRef.current || !canvasRef.current || !isCameraOn) return;
 
@@ -79,24 +85,19 @@ export function SnapshotEffect() {
       return;
     }
 
-    // Set canvas size to match video
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
-    // Draw current video frame to canvas
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Get image as data URL
     const imageDataUrl = canvas.toDataURL("image/jpeg");
 
-    // Flash and shutter animation delay
     setTimeout(() => {
       setCapturedPhotos((prev) => [imageDataUrl, ...prev]);
       setIsCapturing(false);
     }, 800);
   }, [isCameraOn]);
 
-  // Clean up on unmount
   useEffect(() => {
     return () => {
       const stream = videoRef.current?.srcObject as MediaStream;
@@ -105,43 +106,6 @@ export function SnapshotEffect() {
       }
     };
   }, []);
-
-  // Demo capture function for fallback
-  const handleDemoCapture = () => {
-    setIsCapturing(true);
-    setTimeout(() => {
-      // Create a demo image (gradient)
-      const canvas = document.createElement("canvas");
-      canvas.width = 800;
-      canvas.height = 600;
-      const context = canvas.getContext("2d");
-
-      if (context) {
-        // Create a gradient background
-        const gradient = context.createLinearGradient(
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
-        gradient.addColorStop(0, "#4F46E5");
-        gradient.addColorStop(1, "#EC4899");
-        context.fillStyle = gradient;
-        context.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Add text
-        context.fillStyle = "white";
-        context.font = "bold 48px system-ui";
-        context.textAlign = "center";
-        context.fillText("Demo Photo", canvas.width / 2, canvas.height / 2);
-
-        const imageDataUrl = canvas.toDataURL("image/jpeg");
-        setCapturedPhotos((prev) => [imageDataUrl, ...prev]);
-      }
-
-      setIsCapturing(false);
-    }, 800);
-  };
 
   return (
     <section
@@ -204,7 +168,7 @@ export function SnapshotEffect() {
           <div className="flex flex-col items-center gap-8">
             {/* Webcam Feed */}
             <div className="relative w-full max-w-2xl aspect-video bg-black rounded-2xl overflow-hidden">
-              {isCameraOn ? (
+              {isCameraOn && isClicked ? (
                 <motion.video
                   ref={videoRef}
                   autoPlay
@@ -242,8 +206,7 @@ export function SnapshotEffect() {
                 </div>
               )}
 
-              {/* Camera controls overlay */}
-              {isCameraOn && (
+              {isCameraOn && isClicked && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -274,7 +237,7 @@ export function SnapshotEffect() {
                 >
                   <Button
                     size="lg"
-                    onClick={startCamera}
+                    onClick={() => setIsClicked(true)}
                     className="h-16 px-8 bg-primary hover:bg-primary/90 text-primary-foreground glow-cyan"
                   >
                     <Video className="w-5 h-5 mr-2" />
