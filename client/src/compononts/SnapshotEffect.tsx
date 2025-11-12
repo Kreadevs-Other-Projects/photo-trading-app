@@ -1,7 +1,7 @@
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState, useCallback, useEffect } from "react";
 import { Button } from "./ui/button";
-import { Camera, Video, VideoOff } from "lucide-react";
+import { Camera, Video, VideoOff, AlertCircle } from "lucide-react";
 
 export function SnapshotEffect() {
   const ref = useRef(null);
@@ -14,11 +14,26 @@ export function SnapshotEffect() {
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isSupported, setIsSupported] = useState(true);
 
-  // Start camera function
+  // Check if browser supports media devices
+  useEffect(() => {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setIsSupported(false);
+      setError("Camera access is not supported in this browser");
+    }
+  }, []);
+
+  // Start camera function with better error handling
   const startCamera = useCallback(async () => {
     try {
       setError(null);
+
+      // Check if mediaDevices is available
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error("Camera API not supported in this browser");
+      }
+
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: {
           width: { ideal: 1280 },
@@ -29,12 +44,32 @@ export function SnapshotEffect() {
 
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
+        // Wait for video to be ready
+        await new Promise((resolve) => {
+          if (videoRef.current) {
+            videoRef.current.onloadedmetadata = () => resolve(true);
+          }
+        });
       }
       setStream(mediaStream);
       setIsCameraOn(true);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error accessing camera:", err);
-      setError("Cannot access camera. Please check permissions.");
+
+      // Handle specific error cases
+      if (err.name === "NotAllowedError") {
+        setError(
+          "Camera permission denied. Please allow camera access and try again."
+        );
+      } else if (err.name === "NotFoundError") {
+        setError("No camera found on this device.");
+      } else if (err.name === "NotSupportedError") {
+        setError("Camera access is not supported in this browser.");
+      } else {
+        setError(
+          "Cannot access camera. Please check permissions and try again."
+        );
+      }
       setIsCameraOn(false);
     }
   }, []);
@@ -42,7 +77,9 @@ export function SnapshotEffect() {
   // Stop camera function
   const stopCamera = useCallback(() => {
     if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
+      stream.getTracks().forEach((track) => {
+        track.stop();
+      });
       setStream(null);
       setIsCameraOn(false);
     }
@@ -50,7 +87,7 @@ export function SnapshotEffect() {
 
   // Capture photo from webcam
   const handleCapture = useCallback(() => {
-    if (!videoRef.current || !canvasRef.current) return;
+    if (!videoRef.current || !canvasRef.current || !isCameraOn) return;
 
     setIsCapturing(true);
 
@@ -58,12 +95,17 @@ export function SnapshotEffect() {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
 
+    if (!context) {
+      setIsCapturing(false);
+      return;
+    }
+
     // Set canvas size to match video
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
     // Draw current video frame to canvas
-    context?.drawImage(video, 0, 0, canvas.width, canvas.height);
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     // Get image as data URL
     const imageDataUrl = canvas.toDataURL("image/jpeg");
@@ -73,7 +115,7 @@ export function SnapshotEffect() {
       setCapturedPhotos((prev) => [imageDataUrl, ...prev]);
       setIsCapturing(false);
     }, 800);
-  }, []);
+  }, [isCameraOn]);
 
   // Clean up on unmount
   useEffect(() => {
@@ -83,6 +125,43 @@ export function SnapshotEffect() {
       }
     };
   }, [stream]);
+
+  // Demo capture function for unsupported browsers
+  const handleDemoCapture = () => {
+    setIsCapturing(true);
+    setTimeout(() => {
+      // Create a demo image (gradient)
+      const canvas = document.createElement("canvas");
+      canvas.width = 800;
+      canvas.height = 600;
+      const context = canvas.getContext("2d");
+
+      if (context) {
+        // Create a gradient background
+        const gradient = context.createLinearGradient(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+        gradient.addColorStop(0, "#4F46E5");
+        gradient.addColorStop(1, "#EC4899");
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Add text
+        context.fillStyle = "white";
+        context.font = "bold 48px system-ui";
+        context.textAlign = "center";
+        context.fillText("Demo Photo", canvas.width / 2, canvas.height / 2);
+
+        const imageDataUrl = canvas.toDataURL("image/jpeg");
+        setCapturedPhotos((prev) => [imageDataUrl, ...prev]);
+      }
+
+      setIsCapturing(false);
+    }, 800);
+  };
 
   return (
     <section
@@ -158,19 +237,30 @@ export function SnapshotEffect() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-muted/20">
-                  <div className="text-center">
-                    <VideoOff className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">
-                      {error ? error : "Camera is off"}
-                    </p>
-                    {error && (
-                      <Button
-                        onClick={startCamera}
-                        className="mt-4"
-                        variant="outline"
-                      >
-                        Try Again
-                      </Button>
+                  <div className="text-center p-8">
+                    {error ? (
+                      <>
+                        <AlertCircle className="w-16 h-16 text-destructive mx-auto mb-4" />
+                        <p className="text-muted-foreground mb-4">{error}</p>
+                        {isSupported && (
+                          <Button
+                            onClick={startCamera}
+                            className="mt-2"
+                            variant="outline"
+                          >
+                            Try Again
+                          </Button>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <VideoOff className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                        <p className="text-muted-foreground">
+                          {isSupported
+                            ? "Camera is ready to start"
+                            : "Camera not supported - using demo mode"}
+                        </p>
+                      </>
                     )}
                   </div>
                 </div>
@@ -202,19 +292,38 @@ export function SnapshotEffect() {
             {/* Camera Control Buttons */}
             <div className="flex gap-4 flex-wrap justify-center">
               {!isCameraOn ? (
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button
-                    size="lg"
-                    onClick={startCamera}
-                    className="h-16 px-8 bg-primary hover:bg-primary/90 text-primary-foreground glow-cyan"
-                  >
-                    <Video className="w-5 h-5 mr-2" />
-                    Start Camera
-                  </Button>
-                </motion.div>
+                <>
+                  {isSupported ? (
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Button
+                        size="lg"
+                        onClick={startCamera}
+                        className="h-16 px-8 bg-primary hover:bg-primary/90 text-primary-foreground glow-cyan"
+                      >
+                        <Video className="w-5 h-5 mr-2" />
+                        Start Camera
+                      </Button>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Button
+                        size="lg"
+                        onClick={handleDemoCapture}
+                        disabled={isCapturing}
+                        className="h-16 px-8 bg-primary hover:bg-primary/90 text-primary-foreground"
+                      >
+                        <Camera className="w-5 h-5 mr-2" />
+                        Demo Capture
+                      </Button>
+                    </motion.div>
+                  )}
+                </>
               ) : (
                 <motion.div
                   whileHover={{ scale: 1.05 }}
@@ -240,7 +349,9 @@ export function SnapshotEffect() {
             <p className="text-muted-foreground text-lg text-center">
               {isCameraOn
                 ? "Click the camera button to capture a moment"
-                : "Start your camera to begin capturing photos"}
+                : isSupported
+                ? "Start your camera to begin capturing photos"
+                : "Your browser doesn't support camera access - try demo mode"}
             </p>
 
             {/* Polaroid Carousel */}
@@ -300,7 +411,9 @@ export function SnapshotEffect() {
                               transition={{ delay: 1.5 }}
                               className="text-xs text-gray-500"
                             >
-                              Moment #{capturedPhotos.length - index}
+                              {isSupported
+                                ? `Moment #${capturedPhotos.length - index}`
+                                : "Demo Photo"}
                             </motion.p>
                           </div>
                         </div>
@@ -313,7 +426,9 @@ export function SnapshotEffect() {
               {capturedPhotos.length === 0 && (
                 <div className="text-center py-12">
                   <p className="text-muted-foreground">
-                    Your captured moments will appear here
+                    {isSupported
+                      ? "Your captured moments will appear here"
+                      : "Demo photos will appear here"}
                   </p>
                 </div>
               )}
