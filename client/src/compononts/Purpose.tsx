@@ -1,6 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { Lock, Unlock, ArrowRight } from "lucide-react";
+import { Lock, ArrowUp } from "lucide-react";
 import portrait1 from "../assets/portraits/portrait-1.jpg";
 import portrait2 from "../assets/portraits/portrait-2.jpg";
 import portrait3 from "../assets/portraits/portrait-3.jpg";
@@ -15,7 +15,6 @@ export function Purpose() {
       ref={ref}
       className="relative py-32 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
-      {/* Background Glow */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="w-[800px] h-[800px] bg-neon-blue/10 rounded-full blur-3xl" />
       </div>
@@ -36,7 +35,6 @@ export function Purpose() {
           </p>
         </motion.div>
 
-        {/* Trade Demo */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={isInView ? { opacity: 1, scale: 1 } : {}}
@@ -44,7 +42,6 @@ export function Purpose() {
           className="max-w-5xl mx-auto"
         >
           <div className="grid md:grid-cols-3 gap-8 items-center">
-            {/* Left Phone - Locked Photo */}
             <motion.div
               initial={{ x: -100, opacity: 0 }}
               animate={isInView ? { x: 0, opacity: 1 } : {}}
@@ -52,13 +49,20 @@ export function Purpose() {
               className="glass-morphism rounded-3xl p-6 space-y-4"
             >
               <div className="aspect-[9/16] bg-gradient-to-br from-card to-muted rounded-2xl relative overflow-hidden group">
-                <div className="absolute inset-0 bg-background/90 backdrop-blur-md flex items-center justify-center">
+                <div className="absolute inset-0 bg-background/0 backdrop-blur-md flex items-center justify-center">
                   <motion.div
                     animate={{ scale: [1, 1.1, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
-                    className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center glow-cyan"
+                    className="w-full h-full flex items-center justify-center"
                   >
-                    <Lock className="w-10 h-10 text-primary" />
+                    <img
+                      src={portrait2}
+                      alt=""
+                      className="absolute inset-0 w-full h-full object-cover filter blur-md opacity-30"
+                    />
+                    <div className="flex items-center justify-center">
+                      <Lock className="w-10 h-10 text-primary drop-shadow-[0_0_10px_rgba(34,211,238,0.8)] cursor-pointer transition-all" />
+                    </div>
                   </motion.div>
                 </div>
                 <div className="absolute bottom-4 left-4 right-4 text-center">
@@ -72,7 +76,6 @@ export function Purpose() {
               </p>
             </motion.div>
 
-            {/* Center Arrow */}
             <div className="flex flex-col items-center justify-center">
               <motion.div
                 initial={{ scale: 0, rotate: 0 }}
@@ -82,7 +85,7 @@ export function Purpose() {
                 transition={{ delay: 0.7, duration: 1, type: "spring" }}
                 className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center glow-blue mb-4"
               >
-                <ArrowRight className="w-8 h-8 text-primary" />
+                <ArrowUp className="w-8 h-8 text-primary" />
               </motion.div>
               <motion.p
                 initial={{ opacity: 0 }}
@@ -94,7 +97,6 @@ export function Purpose() {
               </motion.p>
             </div>
 
-            {/* Right Phone - Photo Gallery */}
             <motion.div
               initial={{ x: 100, opacity: 0 }}
               animate={isInView ? { x: 0, opacity: 1 } : {}}
@@ -139,7 +141,6 @@ export function Purpose() {
             </motion.div>
           </div>
 
-          {/* Feature Tags */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -149,7 +150,7 @@ export function Purpose() {
             {[
               "Face Recognition",
               "Smart Tagging",
-              "Fair Unlocks",
+              "Photo Trades",
               "Privacy First",
             ].map((tag, i) => (
               <motion.div

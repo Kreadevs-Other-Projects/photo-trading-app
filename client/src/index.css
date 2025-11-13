@@ -35,20 +35,17 @@
 
     --radius: 0.75rem;
 
-    /* Neon accents */
     --neon-cyan: 190 100% 50%;
     --neon-blue: 214 100% 50%;
     --neon-purple: 280 65% 60%;
 
-    /* Gradients */
     --gradient-primary: linear-gradient(
       135deg,
       hsl(214, 100%, 50%) 0%,
       hsl(280, 65%, 60%) 100%
     );
 
-    /* Shadows & Glows */
-    --glow-cyan: 0 0 20px hsla(190, 100%, 50%, 0.5);
+    --glow-cyan: 0 0 20px hsl(0, 0%, 98%);
     --glow-blue: 0 0 30px hsla(214, 100%, 50%, 0.4);
     --glow-purple: 0 0 25px hsla(280, 65%, 60%, 0.4);
   }
@@ -84,11 +81,11 @@
     --ring: 190 100% 50%;
 
     /* Enhanced glows for dark mode */
-    --glow-cyan: 0 0 30px hsla(190, 100%, 50%, 0.6),
+    --glow-cyan: 0 0 30px hsla(190, 100%, 50%, 0.164),
       0 0 60px hsla(190, 100%, 50%, 0.3);
     --glow-blue: 0 0 40px hsla(214, 100%, 50%, 0.5),
       0 0 80px hsla(214, 100%, 50%, 0.2);
-    --glow-purple: 0 0 35px hsla(280, 65%, 60%, 0.5),
+    --glow-purple: 0 0 35px hsla(280, 65%, 60%, 0.26),
       0 0 70px hsla(280, 65%, 60%, 0.2);
   }
 }

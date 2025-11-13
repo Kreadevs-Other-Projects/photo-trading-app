@@ -46,7 +46,6 @@ export function FeaturePeek() {
       ref={ref}
       className="relative py-32 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
-      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/50 to-background" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
@@ -84,7 +83,6 @@ export function FeaturePeek() {
                 className="group"
               >
                 <motion.div className="glass-morphism rounded-3xl p-6 h-full hover:bg-card/60 transition-all duration-300 border border-border/0 hover:border-primary/30 relative overflow-hidden">
-                  {/* Animated neon outline on hover */}
                   <motion.div
                     initial={{ opacity: 0 }}
                     whileHover={{ opacity: 1 }}
@@ -92,7 +90,6 @@ export function FeaturePeek() {
                     style={{ filter: "blur(20px)", zIndex: -1 }}
                   />
 
-                  {/* Icon Container */}
                   <motion.div
                     className={`w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 ${glowClass} transition-all duration-300`}
                   >
@@ -104,7 +101,6 @@ export function FeaturePeek() {
                     </motion.div>
                   </motion.div>
 
-                  {/* Content */}
                   <h3 className="text-xl font-bold mb-3 text-foreground">
                     {feature.title}
                   </h3>
@@ -112,7 +108,6 @@ export function FeaturePeek() {
                     {feature.description}
                   </p>
 
-                  {/* Floating particles on hover */}
                   <motion.div
                     initial={{ opacity: 0, scale: 0 }}
                     whileHover={{ opacity: [0, 1, 0], scale: [0, 1.5, 0] }}

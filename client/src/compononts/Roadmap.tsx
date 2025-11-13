@@ -56,7 +56,6 @@ export function Roadmap() {
       ref={ref}
       className="relative py-32 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
-      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/10 to-background" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
@@ -73,10 +72,7 @@ export function Roadmap() {
             The journey ahead: building the future of social photography
           </p>
         </motion.div>
-
-        {/* Responsive Timeline with Walking Footsteps */}
         <div className="relative">
-          {/* Desktop: Horizontal Layout */}
           <div className="hidden lg:block">
             <div className="flex justify-between items-start gap-4 relative px-8">
               {milestones.map((milestone, index) => {
@@ -90,7 +86,6 @@ export function Roadmap() {
 
                 return (
                   <div key={milestone.title} className="relative flex-1">
-                    {/* Milestone Card */}
                     <motion.div
                       initial={{ opacity: 0, y: 50, scale: 0.8 }}
                       animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
@@ -102,7 +97,6 @@ export function Roadmap() {
                       }}
                       className="relative"
                     >
-                      {/* Animated Node */}
                       <motion.div
                         className="relative z-10 mb-6 mx-auto w-fit"
                         animate={
@@ -127,7 +121,6 @@ export function Roadmap() {
                         </div>
                       </motion.div>
 
-                      {/* Milestone Card */}
                       <motion.div
                         initial={{ opacity: 0 }}
                         animate={isInView ? { opacity: 1 } : {}}
@@ -153,10 +146,8 @@ export function Roadmap() {
                       </motion.div>
                     </motion.div>
 
-                    {/* Walking Footsteps Animation Between Cards */}
                     {index < milestones.length - 1 && (
                       <div className="absolute top-10 left-[60%] w-[80%] h-1 flex items-center justify-center">
-                        {/* Dotted Path */}
                         <motion.div
                           initial={{ scaleX: 0 }}
                           animate={isInView ? { scaleX: 1 } : {}}
@@ -172,7 +163,6 @@ export function Roadmap() {
                           }}
                         />
 
-                        {/* Animated Walking Footprints */}
                         <motion.div
                           initial={{ x: "-100%", opacity: 0 }}
                           animate={
@@ -202,7 +192,6 @@ export function Roadmap() {
             </div>
           </div>
 
-          {/* Mobile & Tablet: Vertical Layout */}
           <div className="lg:hidden space-y-8">
             {milestones.map((milestone, index) => {
               const Icon = milestone.icon;
@@ -224,7 +213,6 @@ export function Roadmap() {
                   }}
                   className="relative flex gap-6"
                 >
-                  {/* Left Side: Icon & Connector */}
                   <div className="flex flex-col items-center">
                     <motion.div
                       animate={
@@ -249,7 +237,6 @@ export function Roadmap() {
                       </div>
                     </motion.div>
 
-                    {/* Walking Footsteps Vertical Connector */}
                     {index < milestones.length - 1 && (
                       <div className="relative w-1 flex-1 my-4">
                         <motion.div
@@ -267,7 +254,6 @@ export function Roadmap() {
                           }}
                         />
 
-                        {/* Animated Footprints */}
                         <motion.div
                           initial={{ y: "-100%", opacity: 0 }}
                           animate={
@@ -293,7 +279,6 @@ export function Roadmap() {
                     )}
                   </div>
 
-                  {/* Right Side: Card Content */}
                   <motion.div
                     whileHover={{ x: 8, scale: 1.02 }}
                     className="glass-morphism rounded-2xl p-5 flex-1 hover:bg-card/70 transition-all duration-300 shadow-xl"

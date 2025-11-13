@@ -23,10 +23,8 @@ export function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
-        {/* Floating orbs */}
         <motion.div
           className="absolute top-20 left-1/4 w-96 h-96 bg-neon-cyan/20 rounded-full blur-3xl"
           animate={{
@@ -67,7 +65,6 @@ export function Hero() {
         />
       </div>
 
-      {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -99,7 +96,6 @@ export function Hero() {
             Trade a photo back to unlock the one of you.
           </motion.p>
 
-          {/* Email Capture */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -149,7 +145,6 @@ export function Hero() {
             )}
           </motion.div>
 
-          {/* Floating Photo Cards Preview */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -172,7 +167,6 @@ export function Hero() {
         </motion.div>
       </div>
 
-      {/* Scroll Indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

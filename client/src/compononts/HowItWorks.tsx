@@ -19,7 +19,7 @@ const steps = [
   },
   {
     icon: UserCircle,
-    title: "Build Your Profile",
+    title: "Build Your Photo Album",
     description:
       "Collect and curate your best moments in a stunning photo gallery.",
     color: "purple",
@@ -35,7 +35,6 @@ export function HowItWorks() {
       ref={ref}
       className="relative py-32 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
-      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/30 to-background" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
@@ -71,14 +70,11 @@ export function HowItWorks() {
                 transition={{ delay: index * 0.2, duration: 0.8 }}
                 className="relative group"
               >
-                {/* Step Number */}
                 <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-2xl font-bold text-primary z-10">
                   {index + 1}
                 </div>
 
-                {/* Card */}
-                <div className="glass-morphism rounded-3xl p-8 h-full hover:bg-card/60 transition-all duration-300 group-hover:scale-105">
-                  {/* Icon */}
+                <div className="glass-morphism rounded-3xl p-8 h-full hover:bg-card/60 transition-all duration-300 group-hover:scale-105 ">
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={isInView ? { scale: 1 } : {}}
@@ -92,7 +88,6 @@ export function HowItWorks() {
                     <Icon className="w-10 h-10 text-primary" />
                   </motion.div>
 
-                  {/* Content */}
                   <h3 className="text-2xl font-bold mb-4 text-foreground">
                     {step.title}
                   </h3>
@@ -100,7 +95,6 @@ export function HowItWorks() {
                     {step.description}
                   </p>
 
-                  {/* Animated Line */}
                   {index < steps.length - 1 && (
                     <motion.div
                       initial={{ scaleX: 0 }}
@@ -115,7 +109,6 @@ export function HowItWorks() {
           })}
         </div>
 
-        {/* Bottom CTA */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}

@@ -146,7 +146,6 @@ export function ImageGlobeHero() {
       ref={ref}
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         <motion.div
@@ -179,7 +178,6 @@ export function ImageGlobeHero() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left: Content */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
@@ -195,7 +193,7 @@ export function ImageGlobeHero() {
               ✨ Trade Photos. Unlock Moments.
             </motion.div>
 
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 tracking-tight">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-6 tracking-tight">
               <span className="block text-foreground">Get the photos</span>
               <span className="block text-gradient animate-glow-pulse">
                 your friends took—
@@ -209,32 +207,34 @@ export function ImageGlobeHero() {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="text-xl sm:text-2xl text-muted-foreground mb-12"
+              className="text-xs sm:text-2xl text-muted-foreground mb-12 line-clamp-2"
             >
               Two-sided engagement. Social photography. Real moments.
             </motion.p>
 
-            {/* Email Capture */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.6, duration: 0.6 }}
-              className="max-w-md mx-auto lg:mx-0"
+              className="max-w-md mx-auto lg:mx-0 justify-center items-center"
             >
               {!isSubmitted ? (
-                <form onSubmit={handleSubmit} className="flex gap-3">
+                <form
+                  onSubmit={handleSubmit}
+                  className="flex flex-col lg:flex-row md:flex-row gap-5 lg:gap-3 md:gap-3 items-center"
+                >
                   <Input
                     type="email"
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="flex-1 h-14 bg-card/50 backdrop-blur-sm border-border/50 focus:border-primary text-lg"
+                    className="flex h-14 bg-card/50 backdrop-blur-sm border-border/50 focus:border-primary text-lg"
                     required
                   />
                   <Button
                     type="submit"
                     size="lg"
-                    className="h-14 px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold glow-cyan hover:glow-blue transition-all duration-300 hover:scale-105"
+                    className="h-14 lg:h-14 px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold glow-cyan hover:glow-blue transition-all duration-300 hover:scale-105"
                   >
                     Join Early Access
                   </Button>
@@ -265,7 +265,6 @@ export function ImageGlobeHero() {
             </motion.div>
           </motion.div>
 
-          {/* Right: 3D Globe */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={isInView ? { opacity: 1, scale: 1 } : {}}
@@ -284,7 +283,6 @@ export function ImageGlobeHero() {
               </Canvas>
             </Suspense>
 
-            {/* Info Overlay */}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 glass-morphism px-6 py-3 rounded-full">
               <p className="text-sm text-muted-foreground">
                 Drag to rotate • Scroll to zoom • Hover to pop
@@ -294,7 +292,6 @@ export function ImageGlobeHero() {
         </div>
       </div>
 
-      {/* Scroll Indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

@@ -26,7 +26,6 @@ export function FinalCTA() {
       ref={ref}
       className="relative py-32 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
-      {/* Animated Background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-t from-background via-card/30 to-background" />
         <motion.div
@@ -53,7 +52,6 @@ export function FinalCTA() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
-          {/* Floating Icons */}
           <div className="flex justify-center gap-8 mb-8">
             <motion.div
               initial={{ opacity: 0, scale: 0 }}
@@ -75,8 +73,8 @@ export function FinalCTA() {
             </motion.div>
           </div>
 
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
-            Be First to Try{" "}
+          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-bold mb-6">
+            Be The First to Try{" "}
             <span className="text-gradient">Social Photography</span>
           </h2>
 
@@ -84,7 +82,6 @@ export function FinalCTA() {
             Join the waitlist and get exclusive early access when we launch
           </p>
 
-          {/* Email Form */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -137,7 +134,6 @@ export function FinalCTA() {
             )}
           </motion.div>
 
-          {/* Social Proof */}
           {!isSubmitted && (
             <motion.div
               initial={{ opacity: 0 }}
