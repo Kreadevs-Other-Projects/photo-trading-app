@@ -1,6 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { Lock, ArrowUp } from "lucide-react";
+import { Lock, ArrowUp, ArrowLeft } from "lucide-react";
 import portrait1 from "../assets/portraits/portrait-1.jpg";
 import portrait2 from "../assets/portraits/portrait-2.jpg";
 import portrait3 from "../assets/portraits/portrait-3.jpg";
@@ -85,7 +85,7 @@ export function Purpose() {
                 transition={{ delay: 0.7, duration: 1, type: "spring" }}
                 className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center glow-blue mb-4"
               >
-                <ArrowUp className="w-8 h-8 text-primary" />
+                <ArrowLeft className="w-8 h-8 text-primary" />
               </motion.div>
               <motion.p
                 initial={{ opacity: 0 }}
