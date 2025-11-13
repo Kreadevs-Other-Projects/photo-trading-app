@@ -2,7 +2,6 @@ import { ActivityTicker } from "@/compononts/ActivityTracker";
 import { FeaturePeek } from "@/compononts/FeaturePeek";
 import { FinalCTA } from "@/compononts/FinalCTA";
 import { Header } from "../compononts/Header.tsx";
-// import { Header } from "../compononts/Header";
 import { HowItWorks } from "@/compononts/HowItWorks";
 import { ImageGlobeHero } from "@/compononts/ImageGlobeHero";
 import { Purpose } from "@/compononts/Purpose";
@@ -11,7 +10,6 @@ import { SnapshotEffect } from "@/compononts/SnapshotEffect";
 import { useEffect } from "react";
 const Index = () => {
   useEffect(() => {
-    // Set dark mode by default on first load
     if (!localStorage.getItem("vite-ui-theme")) {
       document.documentElement.classList.add("dark");
     }
