@@ -78,11 +78,21 @@ export function Purpose() {
 
             <div className="flex flex-col items-center justify-center">
               <motion.div
-                initial={{ scale: 0, rotate: 0 }}
+                initial={{ translateX: 0, opacity: 1 }}
                 animate={
-                  isInView ? { scale: 1, rotate: 360 } : { scale: 0, rotate: 0 }
+                  isInView
+                    ? {
+                        opacity: 1,
+                        translateX: [0, -10, 0, -10, 0],
+                      }
+                    : { scale: 0, rotate: 0 }
                 }
-                transition={{ delay: 0.7, duration: 1, type: "spring" }}
+                transition={{
+                  // delay: 2,
+                  duration: 1.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
                 className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center glow-blue mb-4"
               >
                 <ArrowLeft className="w-8 h-8 text-primary" />
@@ -109,22 +119,42 @@ export function Purpose() {
                     (img, i) => (
                       <motion.div
                         key={i}
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={isInView ? { scale: 1, opacity: 1 } : {}}
+                        initial={{ rotateY: 90, opacity: 0 }}
+                        animate={
+                          isInView
+                            ? {
+                                rotateY: 0,
+                                opacity: 1,
+                              }
+                            : {}
+                        }
                         transition={{
-                          delay: 0.8 + i * 0.1,
-                          duration: 0.4,
+                          delay: 0.8 + i * 0.15,
+                          duration: 0.6,
                           type: "spring",
+                          stiffness: 80,
                         }}
-                        whileHover={{ scale: 1.05, zIndex: 10 }}
-                        className="aspect-square rounded-lg cursor-pointer hover:glow-cyan transition-all overflow-hidden relative group"
+                        whileHover={{
+                          scale: 1.05,
+                          rotateY: 5,
+                          zIndex: 10,
+                          transition: { type: "spring", stiffness: 400 },
+                        }}
+                        className="aspect-square rounded-lg cursor-pointer overflow-hidden relative group [transform-style:preserve-3d]"
                       >
-                        <img
+                        <motion.img
                           src={img}
                           alt={`Gallery photo ${i + 1}`}
                           className="w-full h-full object-cover"
+                          whileHover={{ scale: 1.1 }}
+                          transition={{ duration: 0.4 }}
                         />
-                        <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <motion.div
+                          className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100"
+                          initial={{ scale: 0.8 }}
+                          whileHover={{ scale: 1 }}
+                          transition={{ duration: 0.3 }}
+                        />
                       </motion.div>
                     )
                   )}
