@@ -1,5 +1,5 @@
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Lock, ArrowUp, ArrowLeft } from "lucide-react";
 import portrait1 from "../assets/portraits/portrait-1.jpg";
 import portrait2 from "../assets/portraits/portrait-2.jpg";
@@ -9,6 +9,22 @@ import portrait4 from "../assets/portraits/portrait-4.jpg";
 export function Purpose() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
+
+  const size = 370;
+
+  const [isMobileView, setIsMobileView] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobileView(window.innerWidth < 768);
+    };
+
+    checkMobile();
+
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   return (
     <section
@@ -80,22 +96,26 @@ export function Purpose() {
               <motion.div
                 initial={{ translateX: 0, opacity: 1 }}
                 animate={
-                  isInView
+                  isInView && isMobileView
                     ? {
                         opacity: 1,
-                        translateX: [0, -10, 0, -10, 0],
+                        translateY: [0, -10, 0, -10, 0],
                       }
-                    : { scale: 0, rotate: 0 }
+                    : { opacity: 1, translateX: [0, -10, 0, -10, 0] }
                 }
                 transition={{
-                  // delay: 2,
+                  delay: 0.1,
                   duration: 1.5,
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
                 className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center glow-blue mb-4"
               >
-                <ArrowLeft className="w-8 h-8 text-primary" />
+                {isMobileView ? (
+                  <ArrowUp className="w-8 h-8 text-primary" />
+                ) : (
+                  <ArrowLeft className="w-8 h-8 text-primary" />
+                )}
               </motion.div>
               <motion.p
                 initial={{ opacity: 0 }}

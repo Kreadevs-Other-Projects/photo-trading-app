@@ -14,6 +14,24 @@ export function SnapshotEffect() {
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [onScoroll, setOnScroll] = useState(null);
+
+  useEffect(() => {
+    if (isInView && isCameraOn && !onScoroll) {
+      const timer = setTimeout(() => {
+        handleCapture();
+        setOnScroll(true);
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isInView, isCameraOn, onScoroll]);
+
+  useEffect(() => {
+    if (isInView && !isCameraOn && !onScoroll) {
+      startCamera();
+    }
+  }, [isInView]);
 
   const startCamera = useCallback(async () => {
     try {
@@ -56,6 +74,8 @@ export function SnapshotEffect() {
       startCamera();
     } else if (isCameraOn) {
       startCamera();
+    } else if (onScoroll) {
+      startCamera();
     }
   }, [isClicked, isCameraOn]);
 
@@ -69,6 +89,7 @@ export function SnapshotEffect() {
     }
     setIsCameraOn(false);
     setIsClicked(false);
+    setOnScroll(false);
   }, []);
 
   const handleCapture = useCallback(() => {
@@ -112,7 +133,6 @@ export function SnapshotEffect() {
       ref={ref}
       className="relative py-32 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
-      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/20 to-background" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-neon-blue/10 rounded-full blur-3xl" />
 
@@ -132,14 +152,12 @@ export function SnapshotEffect() {
           </p>
         </motion.div>
 
-        {/* Capture Area */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={isInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ delay: 0.3, duration: 0.8 }}
           className="glass-morphism rounded-3xl p-8 md:p-12 relative"
         >
-          {/* Flash Effect */}
           <AnimatePresence>
             {isCapturing && (
               <motion.div
@@ -152,7 +170,6 @@ export function SnapshotEffect() {
             )}
           </AnimatePresence>
 
-          {/* Shutter Effect */}
           <AnimatePresence>
             {isCapturing && (
               <motion.div
@@ -166,7 +183,6 @@ export function SnapshotEffect() {
           </AnimatePresence>
 
           <div className="flex flex-col items-center gap-8">
-            {/* Webcam Feed */}
             <div className="relative w-full max-w-2xl aspect-video bg-black rounded-2xl overflow-hidden">
               {isCameraOn && isClicked ? (
                 <motion.video
@@ -225,10 +241,8 @@ export function SnapshotEffect() {
               )}
             </div>
 
-            {/* Hidden canvas for capturing */}
             <canvas ref={canvasRef} style={{ display: "none" }} />
 
-            {/* Camera Control Buttons */}
             <div className="flex gap-4 flex-wrap justify-center">
               {!isCameraOn ? (
                 <motion.div
@@ -272,7 +286,6 @@ export function SnapshotEffect() {
                 : "Start your camera to begin capturing photos"}
             </p>
 
-            {/* Polaroid Carousel */}
             <div className="w-full mt-8">
               <AnimatePresence mode="popLayout">
                 {capturedPhotos.length > 0 && (
@@ -304,9 +317,7 @@ export function SnapshotEffect() {
                         }}
                         className="flex-shrink-0"
                       >
-                        {/* Polaroid Frame */}
                         <div className="bg-white p-3 rounded-lg shadow-2xl w-48">
-                          {/* Photo with developing effect */}
                           <motion.div
                             initial={{ filter: "blur(20px)", opacity: 0.3 }}
                             animate={{ filter: "blur(0px)", opacity: 1 }}
@@ -321,7 +332,6 @@ export function SnapshotEffect() {
                               className="w-full h-full object-cover"
                             />
                           </motion.div>
-                          {/* Polaroid text area */}
                           <div className="h-8 flex items-center justify-center">
                             <motion.p
                               initial={{ opacity: 0 }}
