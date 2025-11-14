@@ -97,7 +97,7 @@ export function FeaturePeek() {
                       whileHover={feature.iconTransform.hover}
                       transition={{ duration: 0.5, ease: "easeInOut" }}
                     >
-                      <Icon className="w-8 h-8 text-primary" />
+                      <Icon className={`w-8 h-8 text-primary`} />
                     </motion.div>
                   </motion.div>
 

@@ -109,10 +109,10 @@ export function Purpose() {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center glow-blue mb-4"
+                className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center glow-cyan mb-4"
               >
                 {isMobileView ? (
-                  <ArrowUp className="w-8 h-8 text-primary" />
+                  <ArrowUp className="w-8 h-8 text-primary " />
                 ) : (
                   <ArrowLeft className="w-8 h-8 text-primary" />
                 )}
@@ -145,6 +145,8 @@ export function Purpose() {
                             ? {
                                 rotateY: 0,
                                 opacity: 1,
+                                y: [0, -3, 0],
+                                rotateZ: [0, -1, 0, 1, 0],
                               }
                             : {}
                         }
@@ -153,11 +155,22 @@ export function Purpose() {
                           duration: 0.6,
                           type: "spring",
                           stiffness: 80,
+                          y: {
+                            duration: 3,
+                            repeat: Infinity,
+                            delay: i * 0.7,
+                          },
+                          rotateZ: {
+                            duration: 4,
+                            repeat: Infinity,
+                            delay: i * 0.3,
+                          },
                         }}
                         whileHover={{
                           scale: 1.05,
                           rotateY: 5,
                           zIndex: 10,
+                          y: -5,
                           transition: { type: "spring", stiffness: 400 },
                         }}
                         className="aspect-square rounded-lg cursor-pointer overflow-hidden relative group [transform-style:preserve-3d]"
@@ -170,9 +183,8 @@ export function Purpose() {
                           transition={{ duration: 0.4 }}
                         />
                         <motion.div
-                          className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100"
-                          initial={{ scale: 0.8 }}
-                          whileHover={{ scale: 1 }}
+                          className="absolute inset-0 bg-gradient-to-br from-primary/30 to-purple-500/30 opacity-0 "
+                          whileHover={{ opacity: 1 }}
                           transition={{ duration: 0.3 }}
                         />
                       </motion.div>

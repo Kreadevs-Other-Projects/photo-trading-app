@@ -200,11 +200,13 @@ export function SnapshotEffect() {
                   <div className="text-center p-8">
                     {error ? (
                       <>
-                        <AlertCircle className="w-16 h-16 text-destructive mx-auto mb-4" />
-                        <p className="text-muted-foreground mb-4">{error}</p>
+                        <AlertCircle className="w-12 h-10 lg:w-16 lg:h-16 text-destructive mx-auto mb-4 mt-3" />
+                        <p className="text-muted-foreground mb-4 text-sm">
+                          {error}
+                        </p>
                         <Button
                           onClick={startCamera}
-                          className="mt-2"
+                          className="mb-4"
                           variant="outline"
                         >
                           Try Again
