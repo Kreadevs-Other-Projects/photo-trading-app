@@ -1,9 +1,25 @@
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState, useCallback, useEffect } from "react";
 import { Button } from "./ui/button";
-import { Camera, Video, VideoOff, AlertCircle } from "lucide-react";
+import {
+  Camera,
+  Video,
+  VideoOff,
+  AlertCircle,
+  Globe,
+  Check,
+} from "lucide-react";
+import { useGlobe } from "@/store/context";
 
-export function SnapshotEffect() {
+interface SnapshotEffectProps {
+  onAddToGlobe: (image: string) => void;
+  addedImages: string[];
+}
+
+export function SnapshotEffect({
+  onAddToGlobe,
+  addedImages,
+}: SnapshotEffectProps) {
   const ref = useRef(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -14,10 +30,25 @@ export function SnapshotEffect() {
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [onScoroll, setOnScroll] = useState(null);
+  const [onScroll, setOnScroll] = useState<boolean>(false);
+  const [addingToGlobe, setAddingToGlobe] = useState<string | null>(null);
+  const { addImageToGlobe, globeImages } = useGlobe();
+
+  // Function to add image to globe (you'll need to connect this to your actual globe state)
+  const handleAddToGlobe = useCallback(
+    async (imageDataUrl: string) => {
+      setAddingToGlobe(imageDataUrl);
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // Call context function to add to globe
+      addImageToGlobe(imageDataUrl);
+      setAddingToGlobe(null);
+    },
+    [addImageToGlobe]
+  );
 
   useEffect(() => {
-    if (isInView && isCameraOn && !onScoroll) {
+    if (isInView && isCameraOn && !onScroll) {
       const timer = setTimeout(() => {
         handleCapture();
         setOnScroll(true);
@@ -25,10 +56,10 @@ export function SnapshotEffect() {
 
       return () => clearTimeout(timer);
     }
-  }, [isInView, isCameraOn, onScoroll]);
+  }, [isInView, isCameraOn, onScroll]);
 
   useEffect(() => {
-    if (isInView && !isCameraOn && !onScoroll) {
+    if (isInView && !isCameraOn && !onScroll) {
       startCamera();
     }
   }, [isInView]);
@@ -46,7 +77,7 @@ export function SnapshotEffect() {
       });
 
       if (videoRef.current) {
-        videoRef.current.srcObject = await stream;
+        videoRef.current.srcObject = stream;
       }
       setIsCameraOn(true);
     } catch (err: any) {
@@ -74,7 +105,7 @@ export function SnapshotEffect() {
       startCamera();
     } else if (isCameraOn) {
       startCamera();
-    } else if (onScoroll) {
+    } else if (onScroll) {
       startCamera();
     }
   }, [isClicked, isCameraOn]);
@@ -317,7 +348,7 @@ export function SnapshotEffect() {
                           damping: 20,
                           delay: 0.5,
                         }}
-                        className="flex-shrink-0"
+                        className="flex-shrink-0 relative"
                       >
                         <div className="bg-white p-3 rounded-lg shadow-2xl w-48">
                           <motion.div
@@ -344,7 +375,99 @@ export function SnapshotEffect() {
                               Moment #{capturedPhotos.length - index}
                             </motion.p>
                           </div>
+
+                          {/* Add to Globe Button */}
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 2 }}
+                            className="mt-2"
+                          >
+                            {globeImages.includes(photo) ? (
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                className="flex items-center justify-center gap-1 text-xs text-green-600 bg-green-50 py-1 px-2 rounded-full"
+                              >
+                                <Check className="w-3 h-3" />
+                                Added to Globe
+                              </motion.div>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleAddToGlobe(photo)}
+                                disabled={addingToGlobe === photo}
+                                className="w-full text-xs"
+                              >
+                                {addingToGlobe === photo ? (
+                                  <motion.div
+                                    animate={{ rotate: 360 }}
+                                    transition={{
+                                      duration: 1,
+                                      repeat: Infinity,
+                                      ease: "linear",
+                                    }}
+                                    className="flex items-center gap-1"
+                                  >
+                                    <Globe className="w-3 h-3" />
+                                    Adding...
+                                  </motion.div>
+                                ) : (
+                                  <div className="flex items-center gap-1">
+                                    <Globe className="w-3 h-3" />
+                                    Add to Globe
+                                  </div>
+                                )}
+                              </Button>
+                            )}
+                          </motion.div>
                         </div>
+
+                        {/* Animation for adding to globe */}
+                        <AnimatePresence>
+                          {addingToGlobe === photo && (
+                            <motion.div
+                              initial={{
+                                opacity: 1,
+                                scale: 1,
+                                x: 0,
+                                y: 0,
+                              }}
+                              animate={{
+                                opacity: 0,
+                                scale: 0.2,
+                                x: 300, // Adjust based on your globe position
+                                y: -200, // Adjust based on your globe position
+                              }}
+                              exit={{ opacity: 0 }}
+                              transition={{
+                                duration: 1.5,
+                                ease: "easeInOut",
+                              }}
+                              className="absolute inset-0 pointer-events-none z-50"
+                            >
+                              <motion.img
+                                src={photo}
+                                alt="Adding to globe"
+                                className="w-full h-full object-cover rounded-lg shadow-2xl"
+                                style={{
+                                  filter: "brightness(1.2) saturate(1.3)",
+                                }}
+                              />
+                              <motion.div
+                                className="absolute inset-0 bg-neon-blue/30 rounded-lg"
+                                animate={{
+                                  opacity: [0.3, 0.8, 0.3],
+                                }}
+                                transition={{
+                                  duration: 0.8,
+                                  repeat: Infinity,
+                                }}
+                              />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </motion.div>
                     ))}
                   </motion.div>

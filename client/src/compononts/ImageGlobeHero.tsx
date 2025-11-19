@@ -7,21 +7,40 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { Check } from "lucide-react";
+import { useGlobe } from "../store/context";
 
-import portrait1 from "../assets/portraits/portrait-1.jpg";
-import portrait2 from "../assets/portraits/portrait-2.jpg";
-import portrait3 from "../assets/portraits/portrait-3.jpg";
-import portrait4 from "../assets/portraits/portrait-4.jpg";
-import portrait5 from "../assets/portraits/portrait-5.jpg";
-import portrait6 from "../assets/portraits/portrait-6.jpg";
+import portrait1 from "../assets/portraits/portrait-1.jpeg";
+import portrait2 from "../assets/portraits/portrait-2.JPG";
+import portrait3 from "../assets/portraits/portrait-3.jpeg";
+import portrait4 from "../assets/portraits/portrait-4.jpeg";
+import portrait5 from "../assets/portraits/portrait-5.jpeg";
+import portrait6 from "../assets/portraits/portrait-6.jpeg";
+import portrait7 from "../assets/portraits/portrait-7.JPG";
+import portrait8 from "../assets/portraits/portrait-8.jpeg";
+import portrait9 from "../assets/portraits/portrait-9.JPG";
+import portrait10 from "../assets/portraits/portrait-10.JPG";
+import portrait11 from "../assets/portraits/portrait-11.JPG";
+import portrait12 from "../assets/portraits/portrait-12.JPG";
+import portrait13 from "../assets/portraits/portrait-13.JPG";
+import portrait14 from "../assets/portraits/portrait-14.jpeg";
+import portrait15 from "../assets/portraits/portrait-15.jpeg";
 
-const portraits = [
+export const portraits = [
   portrait1,
   portrait2,
   portrait3,
   portrait4,
   portrait5,
   portrait6,
+  portrait7,
+  portrait8,
+  portrait9,
+  portrait10,
+  portrait11,
+  portrait12,
+  portrait13,
+  portrait14,
+  portrait15,
 ];
 
 function PhotoTile({
@@ -64,9 +83,8 @@ function PhotoTile({
   );
 }
 
-function Globe() {
+function Globe({ images }: { images: string[] }) {
   const groupRef = useRef<THREE.Group>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useFrame((state) => {
     if (groupRef.current) {
@@ -106,7 +124,7 @@ function Globe() {
         <PhotoTile
           key={index}
           position={pos}
-          image={portraits[index % portraits.length]}
+          image={images[index % images.length]}
           index={index}
         />
       ))}
@@ -128,6 +146,7 @@ export function ImageGlobeHero() {
   const isInView = useInView(ref, { once: true, amount: 0.3 });
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const { globeImages } = useGlobe(); // Get images from context
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -279,7 +298,7 @@ export function ImageGlobeHero() {
               }
             >
               <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
-                <Globe />
+                <Globe images={globeImages} />
               </Canvas>
             </Suspense>
 

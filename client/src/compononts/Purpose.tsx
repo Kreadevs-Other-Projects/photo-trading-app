@@ -1,10 +1,10 @@
 import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Lock, ArrowUp, ArrowLeft } from "lucide-react";
-import portrait1 from "../assets/portraits/portrait-1.jpg";
-import portrait2 from "../assets/portraits/portrait-2.jpg";
-import portrait3 from "../assets/portraits/portrait-3.jpg";
-import portrait4 from "../assets/portraits/portrait-4.jpg";
+import portrait1 from "../assets/portraits/portrait-1.jpeg";
+import portrait2 from "../assets/portraits/portrait-2.JPG";
+import portrait3 from "../assets/portraits/portrait-3.jpeg";
+import portrait4 from "../assets/portraits/portrait-4.jpeg";
 
 export function Purpose() {
   const ref = useRef(null);
