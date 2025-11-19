@@ -34,13 +34,10 @@ export function SnapshotEffect({
   const [addingToGlobe, setAddingToGlobe] = useState<string | null>(null);
   const { addImageToGlobe, globeImages } = useGlobe();
 
-  // Function to add image to globe (you'll need to connect this to your actual globe state)
   const handleAddToGlobe = useCallback(
     async (imageDataUrl: string) => {
       setAddingToGlobe(imageDataUrl);
       await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Call context function to add to globe
       addImageToGlobe(imageDataUrl);
       setAddingToGlobe(null);
     },
@@ -58,12 +55,6 @@ export function SnapshotEffect({
     }
   }, [isInView, isCameraOn, onScroll]);
 
-  useEffect(() => {
-    if (isInView && !isCameraOn && !onScroll) {
-      startCamera();
-    }
-  }, [isInView]);
-
   const startCamera = useCallback(async () => {
     try {
       setError(null);
@@ -77,7 +68,7 @@ export function SnapshotEffect({
       });
 
       if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+        videoRef.current.srcObject = await stream;
       }
       setIsCameraOn(true);
     } catch (err: any) {
@@ -101,14 +92,16 @@ export function SnapshotEffect({
   }, []);
 
   useEffect(() => {
-    if (isClicked) {
-      startCamera();
-    } else if (isCameraOn) {
-      startCamera();
-    } else if (onScroll) {
+    if (isClicked && !isCameraOn) {
       startCamera();
     }
-  }, [isClicked, isCameraOn]);
+  }, [isClicked, isCameraOn, startCamera]);
+
+  useEffect(() => {
+    if (isInView && !isCameraOn && !onScroll) {
+      startCamera();
+    }
+  }, [isInView, isCameraOn, onScroll, startCamera]);
 
   const stopCamera = useCallback(() => {
     const stream = videoRef.current?.srcObject as MediaStream;
@@ -120,7 +113,7 @@ export function SnapshotEffect({
     }
     setIsCameraOn(false);
     setIsClicked(false);
-    setOnScroll(false);
+    setOnScroll(true);
   }, []);
 
   const handleCapture = useCallback(() => {
@@ -215,19 +208,19 @@ export function SnapshotEffect({
 
           <div className="flex flex-col items-center gap-8">
             <div className="relative w-full max-w-2xl aspect-video bg-black rounded-2xl overflow-hidden">
-              {isCameraOn && isClicked ? (
-                <motion.video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5 }}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-muted/20">
+              <motion.video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isCameraOn ? 1 : 0 }}
+                transition={{ duration: 0.5 }}
+                className="w-full h-full object-cover"
+              />
+
+              {!isCameraOn && (
+                <div className="absolute inset-0 flex items-center justify-center bg-muted/20">
                   <div className="text-center p-8">
                     {error ? (
                       <>
@@ -255,7 +248,7 @@ export function SnapshotEffect({
                 </div>
               )}
 
-              {isCameraOn && isClicked && (
+              {isCameraOn && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
