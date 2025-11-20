@@ -57,10 +57,32 @@ function PhotoTile({
   const texture = useLoader(THREE.TextureLoader, image);
 
   useFrame((state) => {
-    if (meshRef.current && hovered) {
-      meshRef.current.scale.lerp(new THREE.Vector3(1.2, 1.2, 1.2), 0.1);
-    } else if (meshRef.current) {
-      meshRef.current.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
+    if (meshRef.current) {
+      // Make the photo face outward from the sphere center
+      meshRef.current.lookAt(0, 0, 0);
+
+      if (hovered) {
+        meshRef.current.scale.lerp(new THREE.Vector3(1.3, 1.3, 1.3), 0.1);
+        // Move slightly forward when hovered
+        const direction = new THREE.Vector3()
+          .copy(meshRef.current.position)
+          .normalize();
+        meshRef.current.position.lerp(
+          new THREE.Vector3(
+            position[0] + direction.x * 0.2,
+            position[1] + direction.y * 0.2,
+            position[2] + direction.z * 0.2
+          ),
+          0.1
+        );
+      } else {
+        meshRef.current.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
+        // Return to original position
+        meshRef.current.position.lerp(
+          new THREE.Vector3(position[0], position[1], position[2]),
+          0.1
+        );
+      }
     }
   });
 
@@ -71,13 +93,14 @@ function PhotoTile({
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
     >
-      <planeGeometry args={[0.8, 0.8]} />
+      <planeGeometry args={[0.5, 0.5]} /> {/* Smaller images */}
       <meshStandardMaterial
         map={texture}
         transparent
         opacity={hovered ? 1 : 0.9}
         emissive={hovered ? "#00D9FF" : "#000000"}
         emissiveIntensity={hovered ? 0.3 : 0}
+        side={THREE.DoubleSide}
       />
     </mesh>
   );
@@ -88,24 +111,24 @@ function Globe({ images }: { images: string[] }) {
 
   useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y += 0.001;
+      groupRef.current.rotation.y += 0.0008;
     }
   });
 
-  // Create icosahedron-like distribution of photos
   const positions = useMemo(() => {
-    const radius = 3;
+    const radius = 1.5; // Much smaller radius
     const tiles: [number, number, number][] = [];
-    const numRings = 6;
-    const tilesPerRing = 12;
+    const numRings = 8;
 
     for (let ring = 0; ring < numRings; ring++) {
       const phi = Math.PI * (ring / (numRings - 1));
       const y = radius * Math.cos(phi);
       const ringRadius = radius * Math.sin(phi);
 
-      for (let i = 0; i < tilesPerRing; i++) {
-        const theta = (2 * Math.PI * i) / tilesPerRing;
+      const tilesInRing = Math.max(8, Math.floor(15 * Math.sin(phi)));
+
+      for (let i = 0; i < tilesInRing; i++) {
+        const theta = (2 * Math.PI * i) / tilesInRing;
         const x = ringRadius * Math.cos(theta);
         const z = ringRadius * Math.sin(theta);
         tiles.push([x, y, z]);
@@ -116,9 +139,9 @@ function Globe({ images }: { images: string[] }) {
 
   return (
     <group ref={groupRef}>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={1} color="#00D9FF" />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#9D4EDD" />
+      <ambientLight intensity={1.2} />
+      <pointLight position={[3, 3, 3]} intensity={1} color="#00D9FF" />
+      <pointLight position={[-3, -3, -3]} intensity={0.8} color="#9D4EDD" />
 
       {positions.map((pos, index) => (
         <PhotoTile
@@ -133,9 +156,14 @@ function Globe({ images }: { images: string[] }) {
         enableZoom={true}
         enablePan={false}
         autoRotate
-        autoRotateSpeed={0.3}
-        minDistance={5}
-        maxDistance={15}
+        autoRotateSpeed={1}
+        minDistance={2}
+        maxDistance={4}
+        minPolarAngle={Math.PI / 6}
+        maxPolarAngle={Math.PI - Math.PI / 6}
+        enableDamping={true}
+        dampingFactor={0.05}
+        rotateSpeed={1}
       />
     </group>
   );
@@ -146,7 +174,7 @@ export function ImageGlobeHero() {
   const isInView = useInView(ref, { once: true, amount: 0.3 });
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const { globeImages } = useGlobe(); // Get images from context
+  const { globeImages } = useGlobe();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -297,7 +325,19 @@ export function ImageGlobeHero() {
                 </div>
               }
             >
-              <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
+              <Canvas
+                camera={{
+                  position: [0, 0, 5], // Closer starting position
+                  fov: 60, // Wider field of view
+                  near: 0.1,
+                  far: 100,
+                }}
+                gl={{
+                  antialias: true,
+                  alpha: true,
+                }}
+                style={{ background: "transparent" }}
+              >
                 <Globe images={globeImages} />
               </Canvas>
             </Suspense>
