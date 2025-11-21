@@ -4,7 +4,6 @@
 
 @layer base {
   :root {
-    /* Light mode */
     --background: 0 0% 98%;
     --foreground: 240 10% 5%;
 

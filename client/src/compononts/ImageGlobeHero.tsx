@@ -58,12 +58,10 @@ function PhotoTile({
 
   useFrame((state) => {
     if (meshRef.current) {
-      // Make the photo face outward from the sphere center
       meshRef.current.lookAt(0, 0, 0);
 
       if (hovered) {
         meshRef.current.scale.lerp(new THREE.Vector3(1.3, 1.3, 1.3), 0.1);
-        // Move slightly forward when hovered
         const direction = new THREE.Vector3()
           .copy(meshRef.current.position)
           .normalize();
@@ -77,7 +75,6 @@ function PhotoTile({
         );
       } else {
         meshRef.current.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
-        // Return to original position
         meshRef.current.position.lerp(
           new THREE.Vector3(position[0], position[1], position[2]),
           0.1
@@ -93,7 +90,7 @@ function PhotoTile({
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
     >
-      <planeGeometry args={[0.5, 0.5]} /> {/* Smaller images */}
+      <planeGeometry args={[0.5, 0.5]} />
       <meshStandardMaterial
         map={texture}
         transparent
@@ -116,19 +113,21 @@ function Globe({ images }: { images: string[] }) {
   });
 
   const positions = useMemo(() => {
-    const radius = 1.5; // Much smaller radius
+    const radius = 2.5;
     const tiles: [number, number, number][] = [];
-    const numRings = 8;
+    const numRings = 10;
+    const tilesPerRing = 20;
 
     for (let ring = 0; ring < numRings; ring++) {
       const phi = Math.PI * (ring / (numRings - 1));
       const y = radius * Math.cos(phi);
       const ringRadius = radius * Math.sin(phi);
 
-      const tilesInRing = Math.max(8, Math.floor(15 * Math.sin(phi)));
+      const circumference = 2 * Math.PI * ringRadius;
+      const optimalTiles = Math.max(8, Math.floor(circumference / 0.6));
 
-      for (let i = 0; i < tilesInRing; i++) {
-        const theta = (2 * Math.PI * i) / tilesInRing;
+      for (let i = 0; i < optimalTiles; i++) {
+        const theta = (2 * Math.PI * i) / optimalTiles;
         const x = ringRadius * Math.cos(theta);
         const z = ringRadius * Math.sin(theta);
         tiles.push([x, y, z]);
@@ -139,9 +138,10 @@ function Globe({ images }: { images: string[] }) {
 
   return (
     <group ref={groupRef}>
-      <ambientLight intensity={1.2} />
-      <pointLight position={[3, 3, 3]} intensity={1} color="#00D9FF" />
-      <pointLight position={[-3, -3, -3]} intensity={0.8} color="#9D4EDD" />
+      <ambientLight intensity={1} />
+      <pointLight position={[6, 6, 6]} intensity={1.2} color="#00D9FF" />
+      <pointLight position={[-6, -6, -6]} intensity={0.9} color="#9D4EDD" />
+      <pointLight position={[0, 6, 0]} intensity={0.7} color="#FFFFFF" />
 
       {positions.map((pos, index) => (
         <PhotoTile
@@ -156,11 +156,13 @@ function Globe({ images }: { images: string[] }) {
         enableZoom={true}
         enablePan={false}
         autoRotate
-        autoRotateSpeed={1}
-        minDistance={2}
-        maxDistance={4}
+        autoRotateSpeed={1.2}
+        minDistance={3}
+        maxDistance={8}
         minPolarAngle={Math.PI / 6}
-        maxPolarAngle={Math.PI - Math.PI / 6}
+        maxPolarAngle={Math.PI - Math.PI / 8}
+        minAzimuthAngle={-Infinity}
+        maxAzimuthAngle={Infinity}
         enableDamping={true}
         dampingFactor={0.05}
         rotateSpeed={1}
@@ -327,10 +329,10 @@ export function ImageGlobeHero() {
             >
               <Canvas
                 camera={{
-                  position: [0, 0, 5], // Closer starting position
-                  fov: 60, // Wider field of view
+                  position: [0, 0, 6],
+                  fov: 60,
                   near: 0.1,
-                  far: 100,
+                  far: 120,
                 }}
                 gl={{
                   antialias: true,

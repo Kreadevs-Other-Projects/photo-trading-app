@@ -99,7 +99,7 @@ export function Purpose() {
                   isInView && isMobileView
                     ? {
                         opacity: 1,
-                        translateY: [0, -10, 0, -10, 0],
+                        translateY: [0, -10, -0, -10, 0],
                       }
                     : { opacity: 1, translateX: [0, -10, 0, -10, 0] }
                 }
