@@ -10,16 +10,15 @@ const GlobeContext = createContext({
 export const useGlobe = () => useContext(GlobeContext);
 
 export function GlobeProvider({ children }: { children: React.ReactNode }) {
-  const [userImages, setUserImages] = useState<string[]>([]); // User's last 3 images only
+  const [userImages, setUserImages] = useState<string[]>([]);
 
   const addImageToGlobe = (imageDataUrl: string) => {
     setUserImages((prev) => {
       const updated = [imageDataUrl, ...prev];
-      return updated.slice(0, 3); // Keep only latest 3
+      return updated.slice(0, 3);
     });
   };
 
-  // Combine user images + default portraits
   const globeImages = [...userImages, ...portraits];
 
   return (
