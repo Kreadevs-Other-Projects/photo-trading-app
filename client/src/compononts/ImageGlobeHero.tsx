@@ -1,4 +1,4 @@
-import { Suspense, useRef, useState, useMemo } from "react";
+import { Suspense, useRef, useState, useMemo, useEffect } from "react";
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
@@ -24,6 +24,7 @@ import portrait12 from "../assets/portraits/portrait-12.JPG";
 import portrait13 from "../assets/portraits/portrait-13.JPG";
 import portrait14 from "../assets/portraits/portrait-14.jpeg";
 import portrait15 from "../assets/portraits/portrait-15.jpeg";
+import { set } from "date-fns";
 
 export const portraits = [
   portrait1,
@@ -178,20 +179,63 @@ function Globe({ images }: { images: string[] }) {
 export function ImageGlobeHero() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
-  const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { globeImages } = useGlobe();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const testConnection = async () => {
+      try {
+        const response = await fetch("https://192.168.100.60:4000");
+        console.log("Backend connection test:", response.status);
+      } catch (error) {
+        console.error("Backend not reachable:", error);
+      }
+    };
+    testConnection();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email || !email.includes("@")) {
       toast.error("Please enter a valid email address");
       return;
     }
-    setIsSubmitted(true);
-    toast.success("You're on the list! We'll be in touch soon.", {
-      icon: "🎉",
-    });
+
+    try {
+      setLoading(true);
+
+      const response = await fetch("/users/sendEmail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (!result.success) {
+        toast.error(result.message || "Something went wrong");
+      } else {
+        setIsSubmitted(true);
+        toast.success("You're on the list! We'll be in touch soon.", {
+          icon: "🎉",
+        });
+        setEmail("");
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+      toast.error("Something went wrong. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -283,13 +327,15 @@ export function ImageGlobeHero() {
                     onChange={(e) => setEmail(e.target.value)}
                     className="flex h-14 bg-card/50 backdrop-blur-sm border-border/50 focus:border-primary text-lg"
                     required
+                    disabled={loading}
                   />
                   <Button
                     type="submit"
                     size="lg"
                     className="h-14 lg:h-14 px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold glow-cyan hover:glow-blue transition-all duration-300 hover:scale-105"
+                    disabled={loading}
                   >
-                    Join Early Access
+                    {loading ? "Joining..." : "Join Early Access"}
                   </Button>
                 </form>
               ) : (

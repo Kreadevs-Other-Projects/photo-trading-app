@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -10,3 +10,5 @@ const transporter = nodemailer.createTransport({
     rejectUnauthorized: false,
   },
 });
+
+module.exports = { transporter };
