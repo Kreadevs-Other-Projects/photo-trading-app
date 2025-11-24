@@ -118,7 +118,9 @@ function Globe({ images }: { images: string[] }) {
     const numRings = 10;
     const tilesPerRing = 20;
 
-    for (let ring = 0; ring < numRings; ring++) {
+    tiles.push([0, radius, 0]);
+
+    for (let ring = 1; ring < numRings - 1; ring++) {
       const phi = Math.PI * (ring / (numRings - 1));
       const y = radius * Math.cos(phi);
       const ringRadius = radius * Math.sin(phi);
@@ -133,6 +135,8 @@ function Globe({ images }: { images: string[] }) {
         tiles.push([x, y, z]);
       }
     }
+    tiles.push([0, -radius, 0]);
+
     return tiles;
   }, []);
 
@@ -157,10 +161,10 @@ function Globe({ images }: { images: string[] }) {
         enablePan={false}
         autoRotate
         autoRotateSpeed={1.2}
-        minDistance={3}
-        maxDistance={8}
-        minPolarAngle={Math.PI / 6}
-        maxPolarAngle={Math.PI - Math.PI / 8}
+        minDistance={1} // Reduced from 3 to allow zooming inside
+        maxDistance={15}
+        minPolarAngle={0} // Allow viewing from top and bottom
+        maxPolarAngle={Math.PI} // Allow viewing from top and bottom
         minAzimuthAngle={-Infinity}
         maxAzimuthAngle={Infinity}
         enableDamping={true}
@@ -331,7 +335,7 @@ export function ImageGlobeHero() {
                 camera={{
                   position: [0, 0, 6],
                   fov: 60,
-                  near: 0.1,
+                  near: 0.01,
                   far: 120,
                 }}
                 gl={{

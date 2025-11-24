@@ -4,6 +4,13 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { Camera, Sparkles, Check } from "lucide-react";
+import portrait1 from "../assets/portraits/portrait-1.jpeg";
+import portrait2 from "../assets/portraits/portrait-2.JPG";
+import portrait3 from "../assets/portraits/portrait-3.jpeg";
+import portrait4 from "../assets/portraits/portrait-4.jpeg";
+import portrait5 from "../assets/portraits/portrait-5.jpeg";
+
+const portraits = [portrait1, portrait2, portrait3, portrait4, portrait5];
 
 export function FinalCTA() {
   const ref = useRef(null);
@@ -142,11 +149,17 @@ export function FinalCTA() {
               className="mt-8 flex items-center justify-center gap-2 text-sm text-muted-foreground"
             >
               <div className="flex -space-x-2">
-                {[1, 2, 3, 4].map((i) => (
+                {portraits.map((i, img) => (
                   <div
                     key={i}
                     className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 border-2 border-background"
-                  />
+                  >
+                    <img
+                      src={i}
+                      alt={`portrait-${img + 1}`}
+                      className="rounded-full object-fill w-full h-full"
+                    />
+                  </div>
                 ))}
               </div>
               <span>Join 1,000+ people on the waitlist</span>
