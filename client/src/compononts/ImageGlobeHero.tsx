@@ -359,7 +359,7 @@ export function ImageGlobeHero() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={isInView ? { opacity: 1, scale: 1.1 } : {}}
             transition={{ delay: 0.3, duration: 0.8 }}
-            className="h-[500px] md:h-[500px] relative rounded-full"
+            className="h-[500px] md:h-[700px] relative rounded-full"
           >
             <Suspense
               fallback={
