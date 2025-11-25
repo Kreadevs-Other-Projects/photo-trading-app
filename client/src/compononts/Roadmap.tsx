@@ -1047,7 +1047,7 @@ const ProcessingAnimation = ({
       {stage === 3 && (
         <motion.div className="absolute inset-0 flex items-center justify-center rounded-full">
           <motion.img
-            src={displayImage} // Use the current display image (which should be enhanced by now)
+            src={displayImage}
             alt="Enhanced Profile"
             className="w-full h-full object-cover rounded-full"
             initial={{ opacity: 0 }}
