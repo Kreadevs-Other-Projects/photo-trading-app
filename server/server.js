@@ -1,17 +1,22 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const userRoute = require("./routes/user.routes");
 const http = require("http");
+const connectDB = require("./config/db");
+
+const userRoute = require("./routes/user.routes");
+const contactRoute = require("./routes/contact.routes");
 
 const app = express();
 const port = process.env.PORT;
 const server = http.createServer(app);
 
+connectDB();
+
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:8080", "http://192.168.100.60:8080"],
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -23,8 +28,9 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/users", userRoute);
+app.use("/api/contact", contactRoute);
 
-app.get("/api/test", (req, res) => {
+app.get("/test", (req, res) => {
   res.status(200).json({ message: "Backend is reachable" });
 });
 

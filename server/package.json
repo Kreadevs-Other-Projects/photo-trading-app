@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
-    "tunnel": "ngrok http 6000"
+    "tunnel": "ngrok http 4000"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,6 @@
     "multer": "^2.0.2",
     "nodemailer": "^7.0.10",
     "nodemon": "^3.1.11",
-    "pg": "^8.16.3"
+    "mongoose": "^8.19.2"
   }
 }
