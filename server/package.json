@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon app.js",
-    "tunnel": "ngrok http 4000"
+    "dev": "nodemon server.js",
+    "tunnel": "ngrok http 6000"
   },
   "keywords": [],
   "author": "",

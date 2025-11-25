@@ -188,8 +188,14 @@ export function ImageGlobeHero() {
   useEffect(() => {
     const testConnection = async () => {
       try {
-        const response = await fetch("https://192.168.100.60:4000");
-        console.log("Backend connection test:", response.status);
+        const response = await fetch("http://localhost/api/test", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const result = await response.json();
+        console.log("Backend connection test:", result.message);
       } catch (error) {
         console.error("Backend not reachable:", error);
       }
@@ -207,13 +213,16 @@ export function ImageGlobeHero() {
     try {
       setLoading(true);
 
-      const response = await fetch("/users/sendEmail", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: email }),
-      });
+      const response = await fetch(
+        "http://localhost:6000/api/users/sendEmail",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: email }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

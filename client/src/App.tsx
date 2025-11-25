@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import WebcamCapture from "./compononts/WebcamCapture";
 import { GlobeProvider } from "./store/context.js";
+import ContactUs from "./pages/ContactUs.js";
 
 const queryClient = new QueryClient();
 
@@ -21,8 +22,8 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/cam" element={<WebcamCapture />} />
               <Route path="*" element={<NotFound />} />
+              <Route path="/contact" element={<ContactUs />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
