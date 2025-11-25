@@ -185,24 +185,6 @@ export function ImageGlobeHero() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const testConnection = async () => {
-      try {
-        const response = await fetch("http://localhost/api/test", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const result = await response.json();
-        console.log("Backend connection test:", result.message);
-      } catch (error) {
-        console.error("Backend not reachable:", error);
-      }
-    };
-    testConnection();
-  }, []);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email || !email.includes("@")) {

@@ -28,13 +28,16 @@ export default function ContactUs() {
 
   const sendContactMessage = async (data) => {
     try {
-      const response = await fetch("http://localhost:4000/api/contact/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        "http://localhost:4000/api/contact/sendContact",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       const result = await response.json();
       return result;
