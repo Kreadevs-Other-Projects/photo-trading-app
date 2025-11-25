@@ -18,14 +18,50 @@ export function FinalCTA() {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email || !email.includes("@")) {
       toast.error("Please enter a valid email address");
       return;
     }
-    setIsSubmitted(true);
-    toast.success("Welcome to the future of photography! 🎉");
+
+    try {
+      setLoading(true);
+
+      const response = await fetch(
+        "http://localhost:4000/api/users/sendEmail",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: email }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (!result.success) {
+        toast.error(result.message || "Something went wrong");
+      } else {
+        setIsSubmitted(true);
+        toast.success("You're on the list! We'll be in touch soon.", {
+          icon: "🎉",
+        });
+        setEmail("");
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+      toast.error("Something went wrong. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

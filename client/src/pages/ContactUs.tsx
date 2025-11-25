@@ -29,7 +29,7 @@ export default function ContactUs() {
   const sendContactMessage = async (data) => {
     try {
       const response = await fetch(
-        "http://localhost:4000/api/contact/sendContact",
+        "http://localhost:5000/api/contact/sendContact",
         {
           method: "POST",
           headers: {

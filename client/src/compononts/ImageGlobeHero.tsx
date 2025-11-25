@@ -196,7 +196,7 @@ export function ImageGlobeHero() {
       setLoading(true);
 
       const response = await fetch(
-        "http://localhost:6000/api/users/sendEmail",
+        "http://localhost:4000/api/users/sendEmail",
         {
           method: "POST",
           headers: {
@@ -357,14 +357,14 @@ export function ImageGlobeHero() {
 
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
-            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+            animate={isInView ? { opacity: 1, scale: 1.1 } : {}}
             transition={{ delay: 0.3, duration: 0.8 }}
-            className="h-[500px] md:h-[700px] relative"
+            className="h-[500px] md:h-[500px] relative rounded-full"
           >
             <Suspense
               fallback={
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+                <div className="w-full h-full flex items-center justify-center rounded-full ">
+                  <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin " />
                 </div>
               }
             >
