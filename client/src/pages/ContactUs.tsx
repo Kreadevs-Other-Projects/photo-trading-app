@@ -8,6 +8,7 @@ import { Label } from "../compononts/ui/label";
 import { useToast } from "../hooks/use-toast";
 import { useState } from "react";
 import { z } from "zod";
+import { api_url } from "@/constants/url";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100),
@@ -28,16 +29,13 @@ export default function ContactUs() {
 
   const sendContactMessage = async (data) => {
     try {
-      const response = await fetch(
-        "http://localhost:4000/api/contact/sendContact",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
+      const response = await fetch(`${api_url}/api/contact/sendContact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
       const result = await response.json();
       return result;

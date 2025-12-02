@@ -9,6 +9,7 @@ import portrait2 from "../assets/portraits/portrait-2.JPG";
 import portrait3 from "../assets/portraits/portrait-3.jpeg";
 import portrait4 from "../assets/portraits/portrait-4.jpeg";
 import portrait5 from "../assets/portraits/portrait-5.jpeg";
+import { api_url } from "@/constants/url";
 
 const portraits = [portrait1, portrait2, portrait3, portrait4, portrait5];
 
@@ -30,16 +31,13 @@ export function FinalCTA() {
     try {
       setLoading(true);
 
-      const response = await fetch(
-        "http://localhost:4000/api/users/sendEmail",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: email }),
-        }
-      );
+      const response = await fetch(`${api_url}/api/users/sendEmail`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email }),
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

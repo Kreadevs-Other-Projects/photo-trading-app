@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
+import { api_url } from "./src/constants/url";
 
 export default defineConfig(({ mode }) => ({
   server: {
@@ -9,7 +10,7 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     proxy: {
       "/api": {
-        target: "http://localhost:4000",
+        target: api_url,
         changeOrigin: true,
         secure: false,
         configure: (proxy, _options) => {

@@ -25,6 +25,7 @@ import portrait13 from "../assets/portraits/portrait-13.JPG";
 import portrait14 from "../assets/portraits/portrait-14.jpeg";
 import portrait15 from "../assets/portraits/portrait-15.jpeg";
 import { set } from "date-fns";
+import { api_url } from "@/constants/url";
 
 export const portraits = [
   portrait1,
@@ -195,16 +196,13 @@ export function ImageGlobeHero() {
     try {
       setLoading(true);
 
-      const response = await fetch(
-        "http://localhost:4000/api/users/sendEmail",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: email }),
-        }
-      );
+      const response = await fetch(`${api_url}/api/users/sendEmail`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email }),
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
