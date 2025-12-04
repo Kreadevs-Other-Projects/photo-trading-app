@@ -222,7 +222,7 @@ export function Roadmap() {
                         width: "calc(100% - 112px)",
                       }}
                     >
-                      <div className="relative w-full">
+                      <div className="relative w-full h-0.5">
                         <motion.div
                           initial={{ scaleX: 0 }}
                           animate={isInView ? { scaleX: 1 } : {}}
@@ -231,7 +231,7 @@ export function Roadmap() {
                             duration: 0.8,
                             ease: "easeInOut",
                           }}
-                          className="h-0.5 w-full origin-left"
+                          className="h-0.5 w-full origin-left absolute top-0 left-0 z-0"
                           style={{
                             backgroundImage:
                               "repeating-linear-gradient(90deg, hsl(var(--primary) / 0.4) 0px, hsl(var(--primary) / 0.4) 8px, transparent 8px, transparent 16px)",
@@ -239,23 +239,23 @@ export function Roadmap() {
                         />
 
                         <motion.div
-                          initial={{ x: "-100%", opacity: 0 }}
+                          initial={{ left: "0", opacity: 0 }}
                           animate={
                             isInView
                               ? {
-                                  x: ["0%", "100%", "100%"],
+                                  left: ["0%", "50%", "50%"],
                                   opacity: [0, 1, 1, 0],
                                 }
                               : {}
                           }
                           transition={{
-                            delay: 1.2 + index * 0.3,
+                            delay: 2,
                             duration: 4,
                             repeat: Infinity,
                             repeatDelay: 3,
                             ease: "easeInOut",
                           }}
-                          className="absolute top-1/2 -translate-y-1/2"
+                          className="absolute top-1/2 -translate-y-1/2 z-10"
                         >
                           <Footprints className="w-6 h-6 text-primary rotate-90" />
                         </motion.div>
@@ -350,7 +350,7 @@ export function Roadmap() {
                 </motion.div>
 
                 {index < milestones.length - 1 && (
-                  <div className="relative w-1 h-16 mt-2">
+                  <div className="relative w-1 h-16">
                     <motion.div
                       initial={{ scaleY: 0 }}
                       animate={isInView ? { scaleY: 1 } : {}}
@@ -359,18 +359,18 @@ export function Roadmap() {
                         duration: 0.6,
                         ease: "easeInOut",
                       }}
-                      className="w-full h-full origin-top bg-transparent"
+                      className="w-full h-full origin-top absolute top-0 left-0 z-0"
                       style={{
                         backgroundImage:
                           "repeating-linear-gradient(180deg, hsl(var(--primary) / 0.4) 0px, hsl(var(--primary) / 0.4) 8px, transparent 8px, transparent 16px)",
                       }}
                     />
                     <motion.div
-                      initial={{ y: "-100%", opacity: 0 }}
+                      initial={{ top: "0%", opacity: 0 }}
                       animate={
                         isInView
                           ? {
-                              y: ["0%", "100%", "100%"],
+                              top: ["0%", "100%", "100%"],
                               opacity: [0, 1, 1, 0],
                             }
                           : {}
@@ -382,7 +382,7 @@ export function Roadmap() {
                         repeatDelay: 3,
                         ease: "easeInOut",
                       }}
-                      className="absolute left-1/2 -translate-x-1/2"
+                      className="absolute left-1/2 -translate-x-1/2 z-10"
                     >
                       <Footprints className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                     </motion.div>
