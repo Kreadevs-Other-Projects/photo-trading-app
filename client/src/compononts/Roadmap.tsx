@@ -173,139 +173,141 @@ export function Roadmap() {
         </motion.div>
 
         <div className="hidden lg:block">
-          {/* Circles container */}
-          <div className="flex justify-between items-center pt-40 lg:pt-48 relative">
-            {milestones.map((milestone, index) => (
-              <div key={milestone.id} className="relative z-20">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{
-                    delay: index * 0.2 + 0.5,
-                    duration: 0.6,
-                    type: "spring",
-                  }}
-                  className={`w-28 h-28 rounded-full bg-primary/20 flex items-center justify-center glow-${
-                    milestone.color
-                  } border-4 ${
-                    currentStage === index
-                      ? "border-primary/80"
-                      : "border-primary/40"
-                  } transition-all duration-300 relative overflow-hidden`}
-                >
-                  <StageIcon
-                    IconComponent={milestone.icon}
-                    isActive={currentStage === index}
-                    isProcessing={isProcessing}
-                    milestone={milestone}
-                    currentStage={currentStage}
-                    index={index}
-                  />
-
-                  {showImage && currentStage === index && isProcessing && (
-                    <GifAnimation
-                      gifSrc={milestone.gif}
-                      isActive={currentStage === index && isProcessing}
-                      alt={`${milestone.title} Animation`}
-                    />
-                  )}
-                </motion.div>
-              </div>
-            ))}
-            <div className="absolute top-50 left-0 right-0 -translate-y-1/2 z-10">
-              <div className="flex justify-between px-14">
-                {Array.from({ length: milestones.length - 1 }).map(
-                  (_, index) => (
-                    <div
-                      key={`line-${index}`}
-                      className="relative w-[calc(25%-5rem)]"
-                    >
-                      {" "}
-                    
-                      <motion.div
-                        initial={{ scaleX: 0 }}
-                        animate={isInView ? { scaleX: 1 } : {}}
-                        transition={{
-                          delay: 0.8 + index * 0.1,
-                          duration: 0.8,
-                          ease: "easeInOut",
-                        }}
-                        className="h-0.5 w-full"
-                        style={{
-                          backgroundImage:
-                            "repeating-linear-gradient(90deg, hsl(var(--primary) / 0.4) 0px, hsl(var(--primary) / 0.4) 8px, transparent 8px, transparent 16px)",
-                        }}
-                      />
-
-                      <motion.div
-                        initial={{ x: "-50%", opacity: 0 }}
-                        animate={
-                          isInView
-                            ? {
-                                x: "150%",
-                                opacity: [0, 1, 1, 0],
-                              }
-                            : {}
-                        }
-                        transition={{
-                          delay: 1.2 + index * 0.3,
-                          duration: 3,
-                          repeat: Infinity,
-                          repeatDelay: 2,
-                          ease: "linear",
-                        }}
-                        className="absolute top-1/2 -translate-y-1/3 left-0"
-                      >
-                        <Footprints className="w-6 h-6 text-primary rotate-90" />
-                      </motion.div>
-                    </div>
-                  )
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex justify-between mt-32 gap-6">
-            {milestones.map((milestone, index) => (
-              <motion.div
-                key={`card-${milestone.id}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: index * 0.1 + 0.8 }}
-                whileHover={{ y: -8, scale: 1.02 }}
-                className={`glass-morphism rounded-2xl transition-all duration-300 shadow-xl flex-1 min-w-0 p-6 ${
-                  currentStage === index
-                    ? "ring-2 ring-primary/50 bg-primary/5"
-                    : "hover:bg-card/70"
-                }`}
-              >
+          <div className="relative pt-40 lg:pt-48">
+            <div className="flex justify-between items-center relative z-20 px-4">
+              {milestones.map((milestone, index) => (
                 <div
-                  className={`inline-block px-3 py-1 rounded-full text-xs font-bold mb-3 ${
-                    milestone.status === "Now"
-                      ? "bg-primary text-primary-foreground glow-cyan"
-                      : "bg-muted text-muted-foreground"
+                  key={milestone.id}
+                  className="relative z-20 flex-1 flex justify-center"
+                >
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                    transition={{
+                      delay: index * 0.2 + 0.5,
+                      duration: 0.6,
+                      type: "spring",
+                    }}
+                    className={`w-28 h-28 rounded-full bg-primary/20 flex items-center justify-center glow-${
+                      milestone.color
+                    } border-4 ${
+                      currentStage === index
+                        ? "border-primary/80"
+                        : "border-primary/40"
+                    } transition-all duration-300 relative overflow-hidden`}
+                  >
+                    <StageIcon
+                      IconComponent={milestone.icon}
+                      isActive={currentStage === index}
+                      isProcessing={isProcessing}
+                      milestone={milestone}
+                      currentStage={currentStage}
+                      index={index}
+                    />
+
+                    {showImage && currentStage === index && isProcessing && (
+                      <GifAnimation
+                        gifSrc={milestone.gif}
+                        isActive={currentStage === index && isProcessing}
+                        alt={`${milestone.title} Animation`}
+                      />
+                    )}
+                  </motion.div>
+
+                  {index < milestones.length - 1 && (
+                    <div
+                      className="absolute left-1/2 top-1/2 -translate-y-1/2 z-0"
+                      style={{
+                        left: "calc(50% + 56px)",
+                        width: "calc(100% - 112px)",
+                      }}
+                    >
+                      <div className="relative w-full">
+                        <motion.div
+                          initial={{ scaleX: 0 }}
+                          animate={isInView ? { scaleX: 1 } : {}}
+                          transition={{
+                            delay: 0.8 + index * 0.1,
+                            duration: 0.8,
+                            ease: "easeInOut",
+                          }}
+                          className="h-0.5 w-full origin-left"
+                          style={{
+                            backgroundImage:
+                              "repeating-linear-gradient(90deg, hsl(var(--primary) / 0.4) 0px, hsl(var(--primary) / 0.4) 8px, transparent 8px, transparent 16px)",
+                          }}
+                        />
+
+                        <motion.div
+                          initial={{ x: "-100%", opacity: 0 }}
+                          animate={
+                            isInView
+                              ? {
+                                  x: ["0%", "100%", "100%"],
+                                  opacity: [0, 1, 1, 0],
+                                }
+                              : {}
+                          }
+                          transition={{
+                            delay: 1.2 + index * 0.3,
+                            duration: 4,
+                            repeat: Infinity,
+                            repeatDelay: 3,
+                            ease: "easeInOut",
+                          }}
+                          className="absolute top-1/2 -translate-y-1/2"
+                        >
+                          <Footprints className="w-6 h-6 text-primary rotate-90" />
+                        </motion.div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-between mt-32 gap-6">
+              {milestones.map((milestone, index) => (
+                <motion.div
+                  key={`card-${milestone.id}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: index * 0.1 + 0.8 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className={`glass-morphism rounded-2xl transition-all duration-300 shadow-xl flex-1 min-w-0 p-6 ${
+                    currentStage === index
+                      ? "ring-2 ring-primary/50 bg-primary/5"
+                      : "hover:bg-card/70"
                   }`}
                 >
-                  {milestone.status}
-                </div>
-                <h3 className="text-lg font-bold mb-2 text-foreground">
-                  {milestone.title}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {milestone.description}
-                </p>
-                {currentStage === index && isProcessing && (
-                  <motion.div
-                    className="mt-3 w-full bg-primary/20 rounded-full h-1"
-                    initial={{ width: 0 }}
-                    animate={{ width: "100%" }}
-                    transition={{ duration: 1.5, ease: "linear" }}
+                  <div
+                    className={`inline-block px-3 py-1 rounded-full text-xs font-bold mb-3 ${
+                      milestone.status === "Now"
+                        ? "bg-primary text-primary-foreground glow-cyan"
+                        : "bg-muted text-muted-foreground"
+                    }`}
                   >
-                    <div className="h-1 bg-primary rounded-full" />
-                  </motion.div>
-                )}
-              </motion.div>
-            ))}
+                    {milestone.status}
+                  </div>
+                  <h3 className="text-lg font-bold mb-2 text-foreground">
+                    {milestone.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {milestone.description}
+                  </p>
+                  {currentStage === index && isProcessing && (
+                    <motion.div
+                      className="mt-3 w-full bg-primary/20 rounded-full h-1"
+                      initial={{ width: 0 }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: 1.5, ease: "linear" }}
+                    >
+                      <div className="h-1 bg-primary rounded-full" />
+                    </motion.div>
+                  )}
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -357,7 +359,7 @@ export function Roadmap() {
                         duration: 0.6,
                         ease: "easeInOut",
                       }}
-                      className="w-full h-full origin-top"
+                      className="w-full h-full origin-top bg-transparent"
                       style={{
                         backgroundImage:
                           "repeating-linear-gradient(180deg, hsl(var(--primary) / 0.4) 0px, hsl(var(--primary) / 0.4) 8px, transparent 8px, transparent 16px)",
@@ -368,7 +370,7 @@ export function Roadmap() {
                       animate={
                         isInView
                           ? {
-                              y: "200%",
+                              y: ["0%", "100%", "100%"],
                               opacity: [0, 1, 1, 0],
                             }
                           : {}
@@ -377,8 +379,8 @@ export function Roadmap() {
                         delay: index * 0.15 + 0.9,
                         duration: 2,
                         repeat: Infinity,
-                        repeatDelay: 2,
-                        ease: "linear",
+                        repeatDelay: 3,
+                        ease: "easeInOut",
                       }}
                       className="absolute left-1/2 -translate-x-1/2"
                     >
