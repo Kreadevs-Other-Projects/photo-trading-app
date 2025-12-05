@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import WebcamCapture from "./compononts/WebcamCapture";
 import { GlobeProvider } from "./store/context.js";
 import ContactUs from "./pages/ContactUs.js";
+import LoadingSpinner from "./compononts/LoadingSpinner";
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <TooltipProvider>
+          <LoadingSpinner />
           <Toaster />
           <Sonner />
           <BrowserRouter>
