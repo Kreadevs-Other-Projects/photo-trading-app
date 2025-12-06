@@ -7,7 +7,7 @@ const LoadingSpinner = () => {
   useEffect(() => {
     const handleLoad = () => setIsVisible(false);
 
-    const timer = setTimeout(() => setIsVisible(false), 3000);
+    const timer = setTimeout(() => setIsVisible(false), 1000);
 
     window.addEventListener("load", handleLoad);
     return () => {
@@ -20,18 +20,11 @@ const LoadingSpinner = () => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black backdrop-blur-sm z-50">
-      <div className="flex flex-col items-center gap-4 bg-transparent">
-        {/* Spinner circle */}
-        <div className="relative w-12 h-12">
-          <div className="absolute inset-0 border-4 border-gray-500 rounded-full" />
-          <div className="absolute inset-0 border-4 border-transparent border-t-white rounded-full animate-spin" />
-        </div>
-
-        {/* GIF with proper size */}
+      <div className="flex flex-col items-center gap-4 bg-transparent w-100 h-100 bg-red-500">
         <img
           src={camera}
           alt="camera spinner"
-          className="w-50 h-50 object-contain"
+          className="w-[150px] h-[150px] object-contain"
         />
       </div>
     </div>
@@ -39,13 +32,3 @@ const LoadingSpinner = () => {
 };
 
 export default LoadingSpinner;
-
-// const LoadingSpinner = () => {
-//   return (
-//     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90">
-//       <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
-//     </div>
-//   );
-// };
-
-// export default LoadingSpinner;
