@@ -282,7 +282,7 @@ export function ImageGlobeHero() {
             <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-6 tracking-tight">
               <span className="block text-foreground">Get the photos</span>
               <span className="block text-gradient animate-glow-pulse">
-                your friends took—
+                your friends took
               </span>
               <span className="block text-foreground">
                 by sharing one back.
